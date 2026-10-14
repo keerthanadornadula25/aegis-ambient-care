@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: aegis-ambient
+  datasource:
+    url: jdbc:h2:mem:aegisdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Aegis Ambient Safety and Detection Configuration
+aegis:
+  # When demoMode is true, timers are expedited for quick hackathon demonstrations
+  demo-mode: true
+
+  # Verification Timers (seconds)
+  check-in-seconds: 15
+  demo-check-in-seconds: 6
+  countdown-seconds: 30
+  demo-countdown-seconds: 15
+  cooldown-seconds: 60
+
+  # Stillness Detection (seconds)
+  stillness-threshold-seconds: 120
+  demo-stillness-threshold-seconds: 15
+  sway-threshold: 0.020
+
+  # Night Wandering Rules
+  quiet-hours-start: "22:00"
+  quiet-hours-end: "06:00"
+  out-of-bed-baseline-seconds: 600
+  demo-out-of-bed-baseline-seconds: 30
+
+  # Fall Detection Guards
+  fall-impact-window-seconds: 10
+  fall-low-posture-seconds: 3
+
+  # Notification / Twilio SMS (Disabled by default, operates in log mode without API keys)
+  twilio:
+    enabled: false
+    account-sid: ${TWILIO_ACCOUNT_SID:}
+    auth-token: ${TWILIO_AUTH_TOKEN:}
+    from-number: ${TWILIO_FROM_NUMBER:}
+    to-number: ${TWILIO_TO_NUMBER:}

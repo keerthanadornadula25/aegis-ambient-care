@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis Ambient — Privacy-First Home Safety</title>
+  <meta name="description" content="Aegis Ambient provides privacy-first ambient home safety monitoring for hidden falls, prolonged stillness, and night-time wandering.">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <!-- SockJS and STOMP -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+
+  <!-- Shared Header & Navigation -->
+  <header class="site-header">
+    <div class="container nav-wrapper">
+      <a href="/" class="brand-group" id="brandLogoLink">
+        <div class="brand-icon">
+          <!-- Shield & Heart SVG Icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path fill="#0D9488" d="M12 16.5l-3.2-3.2a2.3 2.3 0 0 1 0-3.25 2.3 2.3 0 0 1 3.25 0L12 11l.95-.95a2.3 2.3 0 0 1 3.25 0 2.3 2.3 0 0 1 0 3.25L12 16.5z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Aegis Ambient</span>
+          <span class="brand-tagline">Privacy-first care at home</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav>
+        <ul class="nav-menu" id="primaryNav">
+          <li>
+            <a href="/" class="nav-link active" id="navHome">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="/patient.html" class="nav-link" id="navPatient">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+              Patient Monitoring
+            </a>
+          </li>
+          <li>
+            <a href="/caregiver.html" class="nav-link" id="navCaregiver">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Caregiver Dashboard
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Connection Indicator & Mobile Toggle -->
+      <div class="nav-actions">
+        <div class="connection-pill" id="navConnectionPill">
+          <span class="status-dot connecting"></span>
+          <span class="connection-text">Connecting...</span>
+        </div>
+        <button class="mobile-nav-toggle" id="mobileNavBtn" aria-label="Toggle navigation menu">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main>
+    <section class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <div class="hero-label">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:1rem;height:1rem;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            PRIVACY-FIRST HOME SAFETY
+          </div>
+          <h1 class="hero-heading">Care that notices when it matters.</h1>
+          <p class="hero-lead">
+            Aegis Ambient helps caregivers respond promptly to urgent home emergencies through local browser sensing, gentle voice check-ins, and verified two-stage escalation—without transmitting raw video or compromising dignity.
+          </p>
+          <div class="hero-cta">
+            <a href="/patient.html" class="btn btn-primary btn-lg" id="heroBtnPatient">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+              Open Patient Monitoring
+            </a>
+            <a href="/caregiver.html" class="btn btn-secondary btn-lg" id="heroBtnCaregiver">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              View Caregiver Dashboard
+            </a>
+          </div>
+          <div class="hero-privacy-note">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Local-first sensing. Zero camera images or video uploaded to server.</span>
+          </div>
+        </div>
+
+        <!-- Right: Illustrative Monitoring Card -->
+        <div class="hero-right">
+          <div class="preview-card">
+            <div class="preview-header">
+              <div class="preview-brand-tag">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:1.1rem;height:1.1rem;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                AEGIS SENSOR NODE #1
+              </div>
+              <span class="badge badge-success">System Ready</span>
+            </div>
+
+            <!-- Stylized Skeleton Illustration Canvas Box -->
+            <div class="preview-canvas-box">
+              <svg class="preview-svg-skeleton" viewBox="0 0 140 180" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Head -->
+                <circle cx="70" cy="24" r="12" stroke-width="2.5"/>
+                <!-- Spine / Torso -->
+                <line x1="70" y1="36" x2="70" y2="92"/>
+                <!-- Shoulders -->
+                <line x1="45" y1="52" x2="95" y2="52"/>
+                <!-- Left Arm -->
+                <line x1="45" y1="52" x2="32" y2="80"/>
+                <line x1="32" y1="80" x2="22" y2="108"/>
+                <!-- Right Arm -->
+                <line x1="95" y1="52" x2="108" y2="80"/>
+                <line x1="108" y1="80" x2="118" y2="108"/>
+                <!-- Hips -->
+                <line x1="52" y1="92" x2="88" y2="92"/>
+                <!-- Left Leg -->
+                <line x1="52" y1="92" x2="48" y2="132"/>
+                <line x1="48" y1="132" x2="46" y2="170"/>
+                <!-- Right Leg -->
+                <line x1="88" y1="92" x2="92" y2="132"/>
+                <line x1="92" y1="132" x2="94" y2="170"/>
+                <!-- Key Joints Glowing -->
+                <circle cx="70" cy="24" r="3" fill="#22C55E"/>
+                <circle cx="45" cy="52" r="2.5" fill="#22C55E"/>
+                <circle cx="95" cy="52" r="2.5" fill="#22C55E"/>
+                <circle cx="52" cy="92" r="2.5" fill="#22C55E"/>
+                <circle cx="88" cy="92" r="2.5" fill="#22C55E"/>
+              </svg>
+            </div>
+
+            <!-- Monitoring Metrics Preview -->
+            <div class="preview-metrics-row">
+              <div class="preview-metric-item">
+                <div class="preview-metric-label">Posture</div>
+                <div class="preview-metric-val" style="color:#5EEAD4;">Upright</div>
+              </div>
+              <div class="preview-metric-item">
+                <div class="preview-metric-label">Body Sway</div>
+                <div class="preview-metric-val">0.024</div>
+              </div>
+              <div class="preview-metric-item">
+                <div class="preview-metric-label">Privacy Shield</div>
+                <div class="preview-metric-val" style="color:#22C55E;">Active</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Scenarios Section -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Comprehensive Coverage</div>
+          <h2 class="section-title">One system. Four safety scenarios.</h2>
+          <p class="section-lead">Aegis Ambient detects subtle, hidden, and silent home emergencies that standard optical security cameras and panic pendants overlook.</p>
+        </div>
+
+        <div class="scenarios-grid">
+          <!-- 1. Hidden Fall -->
+          <div class="scenario-card">
+            <div class="scenario-icon-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 class="scenario-title">Hidden Fall</h3>
+            <p class="scenario-desc">
+              Identifies falls that happen behind furniture or in bathrooms by correlating impact sounds with sudden loss of pose visibility.
+            </p>
+            <div class="scenario-tag">Impact + Disappearance Window</div>
+          </div>
+
+          <!-- 2. Prolonged Stillness -->
+          <div class="scenario-card">
+            <div class="scenario-icon-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <h3 class="scenario-title">Prolonged Stillness</h3>
+            <p class="scenario-desc">
+              Tracks micro body sway variance over sliding time windows. Flags unusual frozen postures without making unverified medical diagnoses.
+            </p>
+            <div class="scenario-tag">Postural Sway Variance</div>
+          </div>
+
+          <!-- 3. Night-time Wandering -->
+          <div class="scenario-card">
+            <div class="scenario-icon-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <h3 class="scenario-title">Night-time Wandering</h3>
+            <p class="scenario-desc">
+              Configurable quiet hours (22:00–06:00) with tiered escalation: calm navigational prompt on bed exit, and urgent alert if an exit door opens.
+            </p>
+            <div class="scenario-tag">Tiered Escalation Rules</div>
+          </div>
+
+          <!-- 4. Verified Alerts -->
+          <div class="scenario-card">
+            <div class="scenario-icon-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><polyline points="9 11 12 14 22 4"/></svg>
+            </div>
+            <h3 class="scenario-title">Verified Alerts</h3>
+            <p class="scenario-desc">
+              Two-stage false-alarm prevention gives the person opportunity to cancel via speech or a prominent "I'm OK" button before caregiver dispatch.
+            </p>
+            <div class="scenario-tag">Two-Stage Verification</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="section" style="background-color: #FFFFFF; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-subtitle">Operational Architecture</div>
+          <h2 class="section-title">How Aegis Ambient Protects</h2>
+          <p class="section-lead">Autonomous three-step verification loop running on edge devices and backed by a robust server state machine.</p>
+        </div>
+
+        <div class="how-it-works-steps">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 class="step-title">Observe Locally</h3>
+            <p class="step-desc">
+              MediaPipe Pose Landmarker processes optical frames entirely within browser RAM on the local device. The camera feed is never streamed, and coordinates are converted to small metadata events.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 class="step-title">Check In Gently</h3>
+            <p class="step-desc">
+              When a safety rule triggers, the system initiates a calm Web Speech API check-in: <em>"Hi John, are you okay?"</em> A 30-second countdown gives the patient opportunity to cancel if it is a false alarm.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 class="step-title">Notify Caregiver</h3>
+            <p class="step-desc">
+              If the patient does not respond or confirms distress, the Spring Boot state machine immediately pushes a critical alert to the caregiver dashboard and dispatches SMS notification.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Distinct Section -->
+    <section class="section">
+      <div class="container">
+        <div class="privacy-card-highlight">
+          <div class="privacy-grid">
+            <div class="privacy-left">
+              <h2>Privacy Built by Architecture</h2>
+              <p>
+                Dignity and confidentiality are non-negotiable in personal living spaces like bedrooms and bathrooms.
+              </p>
+              <div class="badge badge-info" style="background-color:rgba(255,255,255,0.15); color:#FFFFFF;">
+                No Cloud Video Streaming
+              </div>
+            </div>
+
+            <div class="privacy-right">
+              <ul class="privacy-checklist">
+                <li class="privacy-item">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <div class="privacy-item-text">
+                    <strong>Zero Raw Video Storage:</strong> Video streams remain in volatile browser memory. Frames and coordinate arrays are discarded immediately after skeleton extraction.
+                  </div>
+                </li>
+                <li class="privacy-item">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <div class="privacy-item-text">
+                    <strong>Metadata-Only Transmission:</strong> The backend receives only high-level summary JSON (e.g. posture state, sway score, timestamp).
+                  </div>
+                </li>
+                <li class="privacy-item">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  <div class="privacy-item-text">
+                    <strong>Explicit User Consent:</strong> Hardware camera and microphone permissions are only requested after the user explicitly presses "Start Monitoring".
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="quick-access-grid">
+          <!-- Patient Quick Card -->
+          <div class="card quick-card quick-card-patient">
+            <div>
+              <span class="badge badge-info" style="margin-bottom: 0.75rem;">Sensor Node View</span>
+              <h3 class="quick-card-title">Patient Monitoring</h3>
+              <p class="quick-card-desc">
+                Launch the client-side sensing interface with real-time pose tracking, voice check-ins, "I'm OK" response controls, and interactive scenario simulation tools.
+              </p>
+            </div>
+            <div>
+              <a href="/patient.html" class="btn btn-primary" id="cardLinkPatient">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                Open Patient Monitoring
+              </a>
+            </div>
+          </div>
+
+          <!-- Caregiver Quick Card -->
+          <div class="card quick-card quick-card-caregiver">
+            <div>
+              <span class="badge badge-demo" style="margin-bottom: 0.75rem;">Caregiver View</span>
+              <h3 class="quick-card-title">Caregiver Dashboard</h3>
+              <p class="quick-card-desc">
+                View live patient health status, incident explanations in plain English, real-time verification countdowns, incident history from H2, and emergency contacts.
+              </p>
+            </div>
+            <div>
+              <a href="/caregiver.html" class="btn btn-secondary" id="cardLinkCaregiver">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Open Caregiver Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Aegis Ambient</h3>
+          <p>Privacy-first ambient monitoring prototype for hidden and silent emergencies at home. Built with Spring Boot, WebSockets, and MediaPipe.</p>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Navigation</h4>
+          <ul class="footer-nav-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/patient.html">Patient Monitoring</a></li>
+            <li><a href="/caregiver.html">Caregiver Dashboard</a></li>
+            <li><a href="/h2-console" target="_blank" rel="noopener">H2 Console</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Hackathon Tech</h4>
+          <ul class="footer-nav-list">
+            <li>Java 17 & Spring Boot 3</li>
+            <li>Spring STOMP WebSockets</li>
+            <li>MediaPipe Pose Landmarker</li>
+            <li>Web Speech & Web Audio APIs</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mandatory Safety Disclaimer -->
+      <div class="footer-disclaimer-card">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <div>
+          <strong>Safety Notice:</strong> Prototype for demonstration. Not a medical device. Call local emergency services in a real emergency. Does not diagnose or claim to detect strokes, seizures, or clinical conditions.
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <span>© 2026 Aegis Ambient. PromptWars 2026 Prototype.</span>
+        <span>Simulated Sensors & Local-First Processing</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize STOMP WebSocket connection for navbar status pill
+      Aegis.initWebSocket();
+    });
+  </script>
+</body>
+</html>
